@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cmtrading Services Crons
  * Plugin URI: https://rgbcode.com/
- * Description: Plugin for automatic login to the webtrader page (based on Panda data).
+ * Description: Plugin for external cron tasks.
  * Author: rgbcode
  * Author URI: https://rgbcode.com/
  * Version: 1.0.0
@@ -28,16 +28,16 @@ require_once CMSC_AUTOLOGIN_PLUGIN_PATH . 'includes/class-autoloader.php';
 /**
  * The code that runs during plugin activation.
  */
-function activate_cmas_autologin(): void {
+function activate_cmsc_plugin(): void {
 	new \cmsc\classes\core\Activator();
 }
 
 /**
  * The code that runs during plugin deactivation.
  */
-function deactivate_cmas_autologin(): void {
+function deactivate_cmsc_plugin(): void {
 	new \cmsc\classes\core\Deactivator();
 }
 
-register_activation_hook( __FILE__, 'activate_cmas_autologin' );
-register_deactivation_hook( __FILE__, 'deactivate_cmas_autologin' );
+register_activation_hook( __FILE__, 'activate_cmsc_plugin' );
+register_deactivation_hook( __FILE__, 'deactivate_cmsc_plugin' );

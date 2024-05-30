@@ -14,7 +14,13 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Do something here if plugin is being uninstalled.
-$acf_options_list = [];
+$acf_options_list = [
+	'optimove_trading_signal_start',
+	'optimove_cron_start',
+	'cm_trading_signal_last_guid',
+	'cm_intercom_conversation_last_launch_time',
+	'optimove_last_call_datetime',
+];
 
 if ( function_exists( 'delete_field' ) ) {
 	foreach ( $acf_options_list as $option_name ) {

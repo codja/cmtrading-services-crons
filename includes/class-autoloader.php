@@ -1,6 +1,8 @@
 <?php
 
-namespace includes;
+namespace cmsc;
+
+use cmsc\classes\cron\Schedule;
 
 class Autoloader {
 
@@ -23,7 +25,7 @@ class Autoloader {
 
 				$file_class_name = $type . '-' . strtolower( str_replace( '_', '-', array_pop( $parse_class ) ) ) . '.php';
 				$class           = implode( DIRECTORY_SEPARATOR, $parse_class ) . DIRECTORY_SEPARATOR . $file_class_name;
-				$file_path       = CMAS_AUTOLOGIN_PLUGIN_PATH . $class;
+				$file_path       = CMSC_AUTOLOGIN_PLUGIN_PATH . $class;
 
 				if ( file_exists( $file_path ) ) {
 					require_once $file_path;
@@ -36,6 +38,7 @@ class Autoloader {
 	}
 
 	public static function start(): void {
+		new Schedule();
 	}
 }
 
