@@ -49,11 +49,11 @@ class Optimove_Trading_Signal {
 		update_option( self::OPTION_NAME_START, true, false );
 
 		$start_panda = microtime( true );
-		$memory      = memory_get_usage();
+		$memory      = memory_get_usage( true );
 
 		$this->send_to_optimove();
 
-		$memory     = memory_get_usage() - $memory;
+		$memory     = memory_get_usage( true ) - $memory;
 		$panda_diff = wp_sprintf( '%.6f sec.', microtime( true ) - $start_panda );
 		Helpers::log_error( 'Trading signal time', $panda_diff, 'trading_signal.log' );
 		Helpers::log_error( 'Trading signal memory', Helpers::convert( $memory ), 'trading_signal.log' );
@@ -85,6 +85,7 @@ class Optimove_Trading_Signal {
 	 *  It calls itself until it sends all the data from the intermediate table
 	 */
 	private function start_sending(): void {
+		$memory = memory_get_usage( true );
 		// get 100 users from the table
 		$parts = $this->trading_signal_table->get_data();
 		if ( ! $parts ) {
@@ -110,6 +111,9 @@ class Optimove_Trading_Signal {
 			}
 		}
 		$this->trading_signal_table->remove_records( $list_for_remove );
+
+		$memory = memory_get_usage( true ) - $memory;
+		Helpers::log_error( 'Trading signal loop memory', Helpers::convert( $memory ), 'trading_signal.log' );
 
 		$this->start_sending();
 	}
