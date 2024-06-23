@@ -15,8 +15,8 @@ class Schedule {
 
 	public function __construct() {
 		add_filter( 'cron_schedules', [ $this, 'register_new_intervals' ] );
-		add_action( Intercom_Conversation::HOOK_NAME_HOURLY, [ new Intercom_Conversation(), 'hourly' ] );
-		add_action( Intercom_Conversation::HOOK_NAME_DAILY, [ new Intercom_Conversation(), 'daily' ] );
+//		add_action( Intercom_Conversation::HOOK_NAME_HOURLY, [ new Intercom_Conversation(), 'hourly' ] );
+//		add_action( Intercom_Conversation::HOOK_NAME_DAILY, [ new Intercom_Conversation(), 'daily' ] );
 
 		add_action( Proline_Payments::HOOK_NAME_DAILY, [ new Proline_Payments(), 'daily' ] );
 		add_action( Proline_Payments::HOOK_NAME_WEEKLY, [ new Proline_Payments(), 'weekly' ] );
@@ -27,13 +27,13 @@ class Schedule {
 	}
 
 	public static function add_tasks(): void {
-		if ( ! wp_next_scheduled( Intercom_Conversation::HOOK_NAME_HOURLY ) ) {
-			wp_schedule_event( strtotime( '+ 1 hour' ), 'hourly', Intercom_Conversation::HOOK_NAME_HOURLY );
-		}
-
-		if ( ! wp_next_scheduled( Intercom_Conversation::HOOK_NAME_DAILY ) ) {
-			wp_schedule_event( time(), 'daily', Intercom_Conversation::HOOK_NAME_DAILY );
-		}
+//		if ( ! wp_next_scheduled( Intercom_Conversation::HOOK_NAME_HOURLY ) ) {
+//			wp_schedule_event( strtotime( '+ 1 hour' ), 'hourly', Intercom_Conversation::HOOK_NAME_HOURLY );
+//		}
+//
+//		if ( ! wp_next_scheduled( Intercom_Conversation::HOOK_NAME_DAILY ) ) {
+//			wp_schedule_event( time(), 'daily', Intercom_Conversation::HOOK_NAME_DAILY );
+//		}
 
 		if ( ! wp_next_scheduled( Proline_Payments::HOOK_NAME_DAILY ) ) {
 			wp_schedule_event( Helpers::get_timestamp_next_night(), 'daily', Proline_Payments::HOOK_NAME_DAILY );
@@ -43,12 +43,12 @@ class Schedule {
 			wp_schedule_event( Helpers::get_timestamp_next_saturday_night(), 'weekly', Proline_Payments::HOOK_NAME_WEEKLY );
 		}
 
-		if ( ! wp_next_scheduled( Optimove_Phone_Call_Ended::HOOK_NAME_PHONE_CALL_ENDED ) ) {
-			wp_schedule_event( time(), '5_min', Optimove_Phone_Call_Ended::HOOK_NAME_PHONE_CALL_ENDED );
-		}
-
 		if ( ! wp_next_scheduled( Proline_Payments::HOOK_NAME_ONE_TIME ) ) {
 			wp_schedule_event( strtotime( '+ 5 years' ), 'monthly', Proline_Payments::HOOK_NAME_ONE_TIME );
+		}
+
+		if ( ! wp_next_scheduled( Optimove_Phone_Call_Ended::HOOK_NAME_PHONE_CALL_ENDED ) ) {
+			wp_schedule_event( time(), '5_min', Optimove_Phone_Call_Ended::HOOK_NAME_PHONE_CALL_ENDED );
 		}
 
 		if ( ! wp_next_scheduled( Optimove_Trading_Signal::HOOK_NAME_TRADING_SIGNAL ) ) {
@@ -58,8 +58,8 @@ class Schedule {
 	}
 
 	public static function remove_tasks(): void {
-		wp_clear_scheduled_hook( Intercom_Conversation::HOOK_NAME_HOURLY );
-		wp_clear_scheduled_hook( Intercom_Conversation::HOOK_NAME_DAILY );
+//		wp_clear_scheduled_hook( Intercom_Conversation::HOOK_NAME_HOURLY );
+//		wp_clear_scheduled_hook( Intercom_Conversation::HOOK_NAME_DAILY );
 		wp_clear_scheduled_hook( Proline_Payments::HOOK_NAME_DAILY );
 		wp_clear_scheduled_hook( Proline_Payments::HOOK_NAME_WEEKLY );
 		wp_clear_scheduled_hook( Proline_Payments::HOOK_NAME_ONE_TIME );
