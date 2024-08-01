@@ -5,17 +5,17 @@ namespace cmsc\classes\external;
 use cmsc\traits\Singleton;
 use Wpdb;
 
-class Panda_DB {
+class CRM_DB {
 
 	use Singleton;
 
 	/**
 	 * @var Wpdb|null
 	 */
-	private $panda_db;
+	private ?Wpdb $crm_db;
 
 	public function __construct() {
-		$this->panda_db = $this->init();
+		$this->crm_db = $this->init();
 	}
 
 	/**
@@ -98,12 +98,12 @@ class Panda_DB {
 	}
 
 	private function execute_query( string $query, ...$args ): ?array {
-		if ( ! $this->panda_db ) {
+		if ( ! $this->crm_db ) {
 			return null;
 		}
 
-		$result = $this->panda_db->get_results(
-			$this->panda_db->prepare(
+		$result = $this->crm_db->get_results(
+			$this->crm_db->prepare(
 				$query,
 				...$args
 			),
@@ -115,19 +115,19 @@ class Panda_DB {
 
 	private function init(): ?Wpdb {
 		if (
-			! defined( 'PANDA_DB_USER' ) ||
-			! defined( 'PANDA_DB_PASS' ) ||
-			! defined( 'PANDA_DB_NAME' ) ||
-			! defined( 'PANDA_DB_HOST' ) ||
+			! defined( 'CRM_DB_USER' ) ||
+			! defined( 'CRM_DB_PASS' ) ||
+			! defined( 'CRM_DB_NAME' ) ||
+			! defined( 'CRM_DB_HOST' ) ||
 			! $this->check_connection() ) {
 			return null;
 		}
 
 		$wpdb = new Wpdb(
-			PANDA_DB_USER,
-			PANDA_DB_PASS,
-			PANDA_DB_NAME,
-			PANDA_DB_HOST
+			CRM_DB_USER,
+			CRM_DB_PASS,
+			CRM_DB_NAME,
+			CRM_DB_HOST
 		);
 
 		return ! empty( $wpdb->error )
@@ -148,10 +148,10 @@ class Panda_DB {
 		}
 
 		if ( ! $mysqli->real_connect(
-			PANDA_DB_HOST,
-			PANDA_DB_USER,
-			PANDA_DB_PASS,
-			PANDA_DB_NAME
+			CRM_DB_HOST,
+			CRM_DB_USER,
+			CRM_DB_PASS,
+			CRM_DB_NAME
 		) ) {
 			return false;
 		}

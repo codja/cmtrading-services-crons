@@ -9,7 +9,7 @@
 namespace cmsc\classes\cron\tasks;
 
 use cmsc\classes\external\Optimove;
-use cmsc\classes\external\Panda_DB;
+use cmsc\classes\external\CRM_DB;
 use cmsc\classes\helpers\Helpers;
 use cmsc\classes\helpers\XML;
 use cmsc\classes\models\Intermediate_Trading_Signal_Table;
@@ -217,7 +217,7 @@ class Optimove_Trading_Signal {
 	}
 
 	private function get_users_data_from_panda(): array {
-		$panda_db = new Panda_DB();
+		$panda_db = new CRM_DB();
 		return $panda_db->get_users_emails_if_user_active();
 	}
 }
