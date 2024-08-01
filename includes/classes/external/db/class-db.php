@@ -2,15 +2,17 @@
 
 namespace cmsc\classes\external\db;
 
+use cmsc\classes\helpers\Helpers;
+
 abstract class DB {
 
-	protected const USER = '';
+	protected ?string $user;
 
-	protected const PASS = '';
+	protected ?string $pass;
 
-	protected const DB_NAME = '';
+	protected ?string $host;
 
-	protected const HOST = '';
+	protected ?string $db_name;
 
 	/**
 	 * @var Wpdb|null
@@ -18,6 +20,7 @@ abstract class DB {
 	private ?Wpdb $crm_db;
 
 	public function __construct() {
+		$this->set_constants();
 		$this->crm_db = $this->init();
 	}
 
@@ -43,10 +46,10 @@ abstract class DB {
 		}
 
 		$wpdb = new \Wpdb(
-			static::USER,
-			static::PASS,
-			static::DB_NAME,
-			static::HOST
+			$this->user,
+			$this->pass,
+			$this->db_name,
+			$this->host,
 		);
 
 		return ! empty( $wpdb->error )
@@ -55,6 +58,20 @@ abstract class DB {
 	}
 
 	private function check_connection(): bool {
+		if ( ! $this->user
+			|| ! $this->pass
+			|| ! $this->host
+			|| ! $this->db_name
+		) {
+			Helpers::log_error(
+				'Error: ',
+				static::class . __( ':  The properties for connecting to the database are not set', 'cmtrading-services-crons' ),
+				'system.log'
+			);
+
+			return false;
+		}
+
 		$timeout = 5;
 		$mysqli  = mysqli_init(); // phpcs:ignore
 
@@ -67,10 +84,10 @@ abstract class DB {
 		}
 
 		if ( ! $mysqli->real_connect(
-			static::HOST,
-			static::USER,
-			static::PASS,
-			static::DB_NAME,
+			$this->host,
+			$this->user,
+			$this->pass,
+			$this->db_name,
 		) ) {
 			return false;
 		}
@@ -79,5 +96,7 @@ abstract class DB {
 
 		return true;
 	}
+
+	abstract protected function set_constants(): void;
 
 }

@@ -4,14 +4,6 @@ namespace cmsc\classes\external\db;
 
 class CRM_DB extends DB {
 
-	protected const USER = CRM_DB_USER ?? null;
-
-	protected const PASS = CRM_DB_PASS ?? null;
-
-	protected const DB_NAME = CRM_DB_NAME ?? null;
-
-	protected const HOST = CRM_DB_HOST ?? null;
-
 	/**
 	 * Get data from Panda DB by email, from table vtiger_account
 	 */
@@ -74,6 +66,13 @@ class CRM_DB extends DB {
 			"SELECT email, customer_id FROM vtiger_account WHERE state = 'Live' AND login_date > %s",
 			strtotime( '- 30 Days' )
 		);
+	}
+
+	protected function set_constants(): void {
+		$this->user    = defined( 'CRM_DB_USER' ) ? CRM_DB_USER : null;
+		$this->pass    = defined( 'CRM_DB_PASS' ) ? CRM_DB_PASS : null;
+		$this->db_name = defined( 'CRM_DB_NAME' ) ? CRM_DB_NAME : null;
+		$this->host    = defined( 'CRM_DB_HOST' ) ? CRM_DB_HOST : null;
 	}
 
 }

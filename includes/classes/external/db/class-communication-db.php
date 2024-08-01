@@ -4,14 +4,6 @@ namespace cmsc\classes\external\db;
 
 class Communication_DB extends DB {
 
-	protected const USER = CRM_COMM_DB_USER ?? null;
-
-	protected const PASS = CRM_COMM_DB_PASS ?? null;
-
-	protected const DB_NAME = CRM_COMM_DB_NAME ?? null;
-
-	protected const HOST = CRM_COMM_DB_HOST ?? null;
-
 	/**
 	 * Get effective calls (call is effective if the duration is > 600)
 	 */
@@ -27,5 +19,11 @@ class Communication_DB extends DB {
 		);
 	}
 
+	protected function set_constants(): void {
+		$this->user    = defined( 'CRM_COMM_DB_USER' ) ? CRM_COMM_DB_USER : null;
+		$this->pass    = defined( 'CRM_COMM_DB_PASS' ) ? CRM_COMM_DB_PASS : null;
+		$this->db_name = defined( 'CRM_COMM_DB_NAME' ) ? CRM_COMM_DB_NAME : null;
+		$this->host    = defined( 'CRM_COMM_DB_HOST' ) ? CRM_COMM_DB_HOST : null;
+	}
 }
 
