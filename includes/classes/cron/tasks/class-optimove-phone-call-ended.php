@@ -8,8 +8,9 @@
 
 namespace cmsc\classes\cron\tasks;
 
+use cmsc\classes\external\db\Communication_DB;
+use cmsc\classes\external\db\CRM_DB;
 use cmsc\classes\external\Optimove;
-use cmsc\classes\external\CRM_DB;
 
 class Optimove_Phone_Call_Ended {
 
@@ -36,16 +37,18 @@ class Optimove_Phone_Call_Ended {
 		update_option( self::OPTION_NAME_START, true, false );
 
 		$last_call_datetime = get_option( self::OPTION_NAME_LAST_CALL_DATETIME, wp_date( 'Y-m-d h:i:s', strtotime( '- 5 minutes' ) ) );
-		$calls              = CRM_DB::instance()->get_effective_calls( $last_call_datetime );
+		$crm_comm_db = new Communication_DB();
+		$calls       = $crm_comm_db->get_effective_calls( $last_call_datetime );
 
 		if ( ! $calls ) {
 			update_option( self::OPTION_NAME_START, false, false );
 			return;
 		}
 
+		$crm_db = new CRM_DB();
 		foreach ( $calls as $call ) {
 			if ( ! empty( $call['related_to'] ) ) {
-				$customer_data = CRM_DB::instance()->get_data_from_vtiger_account_by_account_id( $call['related_to'], 'customer_id, email' );
+				$customer_data = $crm_db->get_data_from_vtiger_account_by_account_id( $call['related_to'], 'customer_id, email' );
 
 				$this->send_event_effective_call_optimove(
 					$call['related_to'],
