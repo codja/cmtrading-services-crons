@@ -15,9 +15,9 @@ abstract class DB {
 	protected ?string $db_name;
 
 	/**
-	 * @var Wpdb|null
+	 * @var \Wpdb|null
 	 */
-	private ?Wpdb $crm_db;
+	private ?\Wpdb $crm_db;
 
 	public function __construct() {
 		$this->set_constants();
