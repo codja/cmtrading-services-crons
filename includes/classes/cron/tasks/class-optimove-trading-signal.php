@@ -8,8 +8,8 @@
 
 namespace cmsc\classes\cron\tasks;
 
+use cmsc\classes\external\db\CRM_DB;
 use cmsc\classes\external\Optimove;
-use cmsc\classes\external\Panda_DB;
 use cmsc\classes\helpers\Helpers;
 use cmsc\classes\helpers\XML;
 use cmsc\classes\models\Intermediate_Trading_Signal_Table;
@@ -65,7 +65,7 @@ class Optimove_Trading_Signal {
 		$this->trading_signal_table = new Intermediate_Trading_Signal_Table();
 		$this->optimove             = new Optimove();
 		$this->data_from_feed       = $this->get_data_from_feed();
-		$users_data                 = $this->get_users_data_from_panda();
+		$users_data                 = $this->get_users_data_from_crm_db();
 
 		if ( ! $this->data_from_feed || ! $users_data ) {
 			return;
@@ -216,8 +216,8 @@ class Optimove_Trading_Signal {
 		];
 	}
 
-	private function get_users_data_from_panda(): array {
-		$panda_db = new Panda_DB();
-		return $panda_db->get_users_emails_if_user_active();
+	private function get_users_data_from_crm_db(): array {
+		$crm_db = new CRM_DB();
+		return $crm_db->get_users_emails_if_user_active();
 	}
 }
