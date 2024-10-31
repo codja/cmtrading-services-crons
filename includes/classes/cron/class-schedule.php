@@ -2,7 +2,6 @@
 
 namespace cmsc\classes\cron;
 
-use cmsc\classes\cron\tasks\Intercom_Conversation;
 use cmsc\classes\cron\tasks\Optimove_Phone_Call_Ended;
 use cmsc\classes\cron\tasks\Optimove_Trading_Signal;
 use cmsc\classes\cron\tasks\Proline_Payments;
