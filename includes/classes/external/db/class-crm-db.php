@@ -63,7 +63,7 @@ class CRM_DB extends DB {
 	 */
 	public function get_users_emails_if_user_active(): ?array {
 		return $this->execute_query(
-			"SELECT email, customer_id FROM vtiger_account WHERE state = 'Live' AND login_date > %s",
+			"SELECT email, customer_id FROM vtiger_account WHERE state = 'Live' COLLATE utf8mb4_0900_ai_ci AND login_date > %s",
 			strtotime( '- 30 Days' )
 		);
 	}

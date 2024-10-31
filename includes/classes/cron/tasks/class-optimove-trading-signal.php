@@ -216,7 +216,7 @@ class Optimove_Trading_Signal {
 		];
 	}
 
-	private function get_users_data_from_crm_db(): array {
+	private function get_users_data_from_crm_db(): ?array {
 		$crm_db = new CRM_DB();
 		return $crm_db->get_users_emails_if_user_active();
 	}
