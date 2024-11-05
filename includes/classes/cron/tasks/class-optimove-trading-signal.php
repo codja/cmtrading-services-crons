@@ -55,8 +55,8 @@ class Optimove_Trading_Signal {
 
 		$memory     = memory_get_usage( true ) - $memory;
 		$panda_diff = wp_sprintf( '%.6f sec.', microtime( true ) - $start_panda );
-		Helpers::log_error( 'Trading signal time', $panda_diff, 'trading_signal.log' );
-		Helpers::log_error( 'Trading signal memory', Helpers::convert( $memory ), 'trading_signal.log' );
+		Helpers::log_error( 'Trading signal time', $panda_diff, 'trading_signal' );
+		Helpers::log_error( 'Trading signal memory', Helpers::convert( $memory ), 'trading_signal' );
 
 		update_option( self::OPTION_NAME_START, false, false );
 	}
@@ -113,12 +113,12 @@ class Optimove_Trading_Signal {
 		$this->trading_signal_table->remove_records( $list_for_remove );
 
 		$memory = memory_get_usage( true ) - $memory;
-		Helpers::log_error( 'Trading signal loop memory', Helpers::convert( $memory ), 'trading_signal.log' );
+		Helpers::log_error( 'Trading signal loop memory', Helpers::convert( $memory ), 'trading_signal' );
 
 		$this->start_sending();
 	}
 
-	private function get_data_from_feed(): array {
+	public function get_data_from_feed(): array {
 		if ( ! defined( 'FEED_TRADING_CENTRAL_TOKEN' ) ) {
 			return [];
 		}
@@ -216,7 +216,7 @@ class Optimove_Trading_Signal {
 		];
 	}
 
-	private function get_users_data_from_crm_db(): ?array {
+	public function get_users_data_from_crm_db(): ?array {
 		$crm_db = new CRM_DB();
 		return $crm_db->get_users_emails_if_user_active();
 	}

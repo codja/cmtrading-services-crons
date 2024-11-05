@@ -66,7 +66,7 @@ abstract class DB {
 			Helpers::log_error(
 				'Error: ',
 				static::class . __( ':  The properties for connecting to the database are not set', 'cmtrading-services-crons' ),
-				'system.log'
+				'system'
 			);
 
 			return false;

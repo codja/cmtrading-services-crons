@@ -38,7 +38,7 @@ class Optimove {
 			]
 		);
 
-		Helpers::log_error( $event, wp_json_encode( $response ), 'optimove.log' );
+		Helpers::log_error( $event, wp_json_encode( $response ), 'optimove' );
 
 		return $response;
 	}
