@@ -92,7 +92,7 @@ abstract class Helpers {
 		error_log(
 			'[' . gmdate( 'Y-m-d H:i:s' ) . '] Error: {' . $title . ':' . $error . "} \n===========\n",
 			3,
-			WP_CONTENT_DIR . DIRECTORY_SEPARATOR . $filename
+			WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . $filename . wp_date( 'd-m-Y' ) . '.log'
 		);
 	}
 
