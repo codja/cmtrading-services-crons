@@ -20,7 +20,7 @@ class Optimove_Trading_Signal {
 
 	const OPTION_NAME_START = 'optimove_trading_signal_start';
 
-	const FEED_URL = 'https://feed.tradingcentral.io/rss_ta.ashx?culture=en-US&type_product=forex&product=&term=intraday&embedded_image=true&days=1&last_at=false&partner=1614';
+	const FEED_URL = 'https://feed.tradingcentral.io/rss_ta.ashx?culture=en-US&product=&term=intraday&embedded_image=true&days=1&last_at=false&partner=1614';
 
 	private Intermediate_Trading_Signal_Table $trading_signal_table;
 
