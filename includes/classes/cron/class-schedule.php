@@ -22,7 +22,10 @@ class Schedule {
 		add_action( Proline_Payments::HOOK_NAME_ONE_TIME, [ new Proline_Payments(), 'one_time' ] );
 
 		add_action( Optimove_Phone_Call_Ended::HOOK_NAME_PHONE_CALL_ENDED, [ new Optimove_Phone_Call_Ended(), 'run' ] );
-		add_action( Optimove_Trading_Signal::HOOK_NAME_TRADING_SIGNAL, [ new Optimove_Trading_Signal(), 'run' ] );
+
+		$trading_signal = new Optimove_Trading_Signal();
+		add_action( Optimove_Trading_Signal::HOOK_NAME_TRADING_SIGNAL, [ $trading_signal, 'run' ] );
+		add_action( Optimove_Trading_Signal::HOOK_NAME_TRADING_SIGNAL_RECURSE, [ $trading_signal, 'start_sending' ] );
 	}
 
 	public static function add_tasks(): void {
@@ -54,6 +57,10 @@ class Schedule {
 			wp_schedule_event( time(), '15_min', Optimove_Trading_Signal::HOOK_NAME_TRADING_SIGNAL );
 		}
 
+		if ( ! wp_next_scheduled( Optimove_Trading_Signal::HOOK_NAME_TRADING_SIGNAL_RECURSE ) ) {
+			wp_schedule_event( time(), '5_min', Optimove_Trading_Signal::HOOK_NAME_TRADING_SIGNAL_RECURSE );
+		}
+
 	}
 
 	public static function remove_tasks(): void {
@@ -64,6 +71,7 @@ class Schedule {
 		wp_clear_scheduled_hook( Proline_Payments::HOOK_NAME_ONE_TIME );
 		wp_clear_scheduled_hook( Optimove_Phone_Call_Ended::HOOK_NAME_PHONE_CALL_ENDED );
 		wp_clear_scheduled_hook( Optimove_Trading_Signal::HOOK_NAME_TRADING_SIGNAL );
+		wp_clear_scheduled_hook( Optimove_Trading_Signal::HOOK_NAME_TRADING_SIGNAL_RECURSE );
 	}
 
 	public function register_new_intervals( $schedule ) {

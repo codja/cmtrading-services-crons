@@ -15,8 +15,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 // Do something here if plugin is being uninstalled.
 $acf_options_list = [
-	'optimove_trading_signal_start',
+	'trading_signal_data_from_feed',
 	'optimove_cron_start',
+	'optimove_trading_signal_start',
 	'cm_trading_signal_last_guid',
 	'cm_intercom_conversation_last_launch_time',
 	'optimove_last_call_datetime',

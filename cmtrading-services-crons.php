@@ -1,6 +1,7 @@
 <?php
 /**
  * Plugin Name: Cmtrading Services Crons
+ * Requires Plugins: advanced-custom-fields-pro
  * Plugin URI: https://rgbcode.com/
  * Description: Plugin for external cron tasks.
  * Author: rgbcode
