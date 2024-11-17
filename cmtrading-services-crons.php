@@ -12,8 +12,6 @@
  */
 
 // If this file is called directly, abort.
-use cmsc\classes\helpers\Helpers;
-
 if ( ! defined( 'WPINC' ) || ! defined( 'ABSPATH' ) ) {
 	exit();
 }
