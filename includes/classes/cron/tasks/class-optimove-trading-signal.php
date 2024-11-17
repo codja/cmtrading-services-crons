@@ -18,7 +18,11 @@ class Optimove_Trading_Signal {
 
 	const HOOK_NAME_TRADING_SIGNAL = 'optimove_trading_signal_hourly';
 
+	const HOOK_NAME_TRADING_SIGNAL_RECURSE = 'optimove_trading_signal_recurse';
+
 	const OPTION_NAME_START = 'optimove_trading_signal_start';
+
+	const OPTION_TRADING_SIGNAL_DATA = 'trading_signal_data_from_feed';
 
 	const FEED_URL = 'https://feed.tradingcentral.io/rss_ta.ashx?culture=en-US&type_product=forex&product=&term=intraday&embedded_image=true&days=1&last_at=false&partner=1614';
 
@@ -26,7 +30,10 @@ class Optimove_Trading_Signal {
 
 	private Optimove $optimove;
 
-	private array $data_from_feed;
+	public function __construct() {
+		$this->trading_signal_table = new Intermediate_Trading_Signal_Table();
+		$this->optimove             = new Optimove();
+	}
 
 	/**
 	 * @throws \Exception
@@ -41,33 +48,29 @@ class Optimove_Trading_Signal {
 			return null;
 		}
 		set_time_limit( 0 );
-
-		$is_launch = get_option( self::OPTION_NAME_START, false );
-		if ( $is_launch ) {
-			return;
-		}
-		update_option( self::OPTION_NAME_START, true, false );
-
 		$start_panda = microtime( true );
 		$memory      = memory_get_usage( true );
 
-		$this->send_to_optimove();
+		$this->save_data();
 
 		$memory     = memory_get_usage( true ) - $memory;
 		$panda_diff = wp_sprintf( '%.6f sec.', microtime( true ) - $start_panda );
 		Helpers::log_error( 'Trading signal time', $panda_diff, 'trading_signal' );
 		Helpers::log_error( 'Trading signal memory', Helpers::convert( $memory ), 'trading_signal' );
-
-		update_option( self::OPTION_NAME_START, false, false );
 	}
 
-	public function send_to_optimove(): void {
-		$this->trading_signal_table = new Intermediate_Trading_Signal_Table();
-		$this->optimove             = new Optimove();
-		$this->data_from_feed       = $this->get_data_from_feed();
-		$users_data                 = $this->get_users_data_from_crm_db();
+	/**
+	 * Save data from feed in option
+	 * Save users from remote db in our db
+	 *
+	 * @return void
+	 */
+	public function save_data(): void {
+		$data_from_feed = $this->get_data_from_feed();
+		$users_data     = $this->get_users_data_from_crm_db();
+		$parts          = $this->trading_signal_table->get_data();
 
-		if ( ! $this->data_from_feed || ! $users_data ) {
+		if ( ! $data_from_feed || ! $users_data || $parts ) {
 			return;
 		}
 
@@ -77,18 +80,35 @@ class Optimove_Trading_Signal {
 			$this->trading_signal_table->save( $part_users );
 		}
 
-		$this->start_sending();
+		// save data from feed in option
+		update_option( self::OPTION_TRADING_SIGNAL_DATA, $data_from_feed, false );
 	}
 
 	/*
-	 *  A recursive method that sends a piece of data to optimove.
-	 *  It calls itself until it sends all the data from the intermediate table
+	 *  A recursive method for cron that sends a piece of data to optimove.
+	 *  It calls every 5 min until it sends all the data from the intermediate table
 	 */
-	private function start_sending(): void {
+	public function start_sending(): void {
+		if (
+			! defined( 'CM_OPTIMOVE_TENANT_ID' )
+			|| ! defined( 'CM_OPTIMOVE_ENDPOINT' )
+		) {
+			return;
+		}
+		set_time_limit( 0 );
+
+		$is_launch = get_option( self::OPTION_NAME_START, false );
+		if ( $is_launch ) {
+			return;
+		}
+		update_option( self::OPTION_NAME_START, true, false );
+
 		$memory = memory_get_usage( true );
 		// get 100 users from the table
-		$parts = $this->trading_signal_table->get_data();
-		if ( ! $parts ) {
+		$parts          = $this->trading_signal_table->get_data();
+		$data_from_feed = get_option( self::OPTION_TRADING_SIGNAL_DATA, [] );
+		if ( ! $parts || ! $data_from_feed ) {
+			update_option( self::OPTION_NAME_START, false, false );
 			$this->trading_signal_table->truncate();
 			return;
 		}
@@ -101,7 +121,7 @@ class Optimove_Trading_Signal {
 				'customer' => $users_datum->customer_id,
 			];
 
-			foreach ( $this->data_from_feed as $item ) {
+			foreach ( $data_from_feed as $item ) {
 				$body            = $user_data;
 				$body['context'] = $item;
 				$this->optimove->send_event_to_optimove(
@@ -112,10 +132,10 @@ class Optimove_Trading_Signal {
 		}
 		$this->trading_signal_table->remove_records( $list_for_remove );
 
+		update_option( self::OPTION_NAME_START, false, false );
+
 		$memory = memory_get_usage( true ) - $memory;
 		Helpers::log_error( 'Trading signal loop memory', Helpers::convert( $memory ), 'trading_signal' );
-
-		$this->start_sending();
 	}
 
 	private function get_data_from_feed(): array {

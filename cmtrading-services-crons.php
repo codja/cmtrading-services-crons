@@ -1,6 +1,7 @@
 <?php
 /**
  * Plugin Name: Cmtrading Services Crons
+ * Requires Plugins: advanced-custom-fields-pro
  * Plugin URI: https://rgbcode.com/
  * Description: Plugin for external cron tasks.
  * Author: rgbcode
@@ -11,6 +12,8 @@
  */
 
 // If this file is called directly, abort.
+use cmsc\classes\helpers\Helpers;
+
 if ( ! defined( 'WPINC' ) || ! defined( 'ABSPATH' ) ) {
 	exit();
 }

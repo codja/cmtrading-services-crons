@@ -84,7 +84,7 @@ abstract class Helpers {
 		return @round( $size / pow( 1024, ( $i = floor( log( $size, 1024 ) ) ) ), 2 ) . ' ' . $unit[ $i ]; // phpcs:ignore
 	}
 
-	public static function log_error( string $title, string $error, string $filename = 'error.log' ): void {
+	public static function log_error( string $title, string $error, string $filename = 'error' ): void {
 		if ( ! $title || ! $error ) {
 			return;
 		}
@@ -92,7 +92,7 @@ abstract class Helpers {
 		error_log(
 			'[' . gmdate( 'Y-m-d H:i:s' ) . '] Error: {' . $title . ':' . $error . "} \n===========\n",
 			3,
-			WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . $filename . wp_date( 'd-m-Y' ) . '.log'
+			WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . $filename . '-' . wp_date( 'd-m-Y' ) . '.log'
 		);
 	}
 
