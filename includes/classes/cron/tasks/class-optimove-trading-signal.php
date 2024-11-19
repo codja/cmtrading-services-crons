@@ -51,6 +51,10 @@ class Optimove_Trading_Signal {
 		$start_panda = microtime( true );
 		$memory      = memory_get_usage( true );
 
+		if ( $this->trading_signal_table->get_data() ) {
+			return null;
+		}
+
 		$this->save_data();
 
 		$memory     = memory_get_usage( true ) - $memory;
@@ -68,9 +72,8 @@ class Optimove_Trading_Signal {
 	public function save_data(): void {
 		$data_from_feed = $this->get_data_from_feed();
 		$users_data     = $this->get_users_data_from_crm_db();
-		$parts          = $this->trading_signal_table->get_data();
 
-		if ( ! $data_from_feed || ! $users_data || $parts ) {
+		if ( ! $data_from_feed || ! $users_data ) {
 			return;
 		}
 
@@ -105,7 +108,7 @@ class Optimove_Trading_Signal {
 
 		$memory = memory_get_usage( true );
 		// get 100 users from the table
-		$parts          = $this->trading_signal_table->get_data();
+		$parts          = $this->trading_signal_table->get_data( 200 );
 		$data_from_feed = get_option( self::OPTION_TRADING_SIGNAL_DATA, [] );
 		if ( ! $parts || ! $data_from_feed ) {
 			update_option( self::OPTION_NAME_START, false, false );
